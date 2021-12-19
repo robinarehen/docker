@@ -1,0 +1,9 @@
+version: "3.8"
+services:
+  jboss_wildfly:
+    container_name: jboss_wildfly
+    image: jboss/wildfly:23.0.1.Final
+    ports:
+      - "8081:8080"
+      - "9991:9990"
+    command: ["/opt/jboss/wildfly/bin/standalone.sh", "-b", "0.0.0.0", "-bmanagement", "0.0.0.0"]

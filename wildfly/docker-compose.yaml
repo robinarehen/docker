@@ -1,0 +1,12 @@
+version: "3.8"
+services:
+  jboss_wildfly:
+    container_name: jboss_wildfly
+    image: open/wildfly
+    ports:
+      - "8081:8080"
+      - "9991:9990"
+networks:
+  default:
+    external:
+      name: backend_database
