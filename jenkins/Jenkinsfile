@@ -1,0 +1,36 @@
+pipeline {
+    agent any
+
+    tools {
+        // Install the Maven version configured as "M3" and add it to the path.
+        maven "MAVEN_HOME"
+    }
+
+    stages {
+        stage('Clone') {
+            steps {
+                git 'https://github.com/robinarehen/multi-modules'
+            }
+        }
+        stage('Build') {
+            steps {
+                sh "mvn -Dmaven.test.failure.ignore=true clean package -f micro-product/pom.xml"
+            }
+        }
+        stage('Test') {
+            steps {
+                sh "mvn test -f micro-product/pom.xml"
+            }
+        }
+        stage('Sonar') {
+            steps {
+                echo "run sonar"
+            }
+        }
+        stage('Deploy') {
+            steps {
+                sh "mvn spring-boot:run -f micro-product/pom.xml"
+            }
+        }
+    }
+}
