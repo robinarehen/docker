@@ -8,4 +8,10 @@ services:
       - .\jenkins_home:/var/jenkins_home
     ports:
       - "9080:8080"
+      - "8081:8081"
       - "5000:5000"
+    networks:
+      - backend
+networks:
+  backend:
+    name: network_jenkins

@@ -24,7 +24,7 @@ pipeline {
         }
         stage('Sonar') {
             steps {
-                echo "run sonar"
+                sh "mvn sonar:sonar -Dsonar.host.url=http://sonarqube:9000 -Dsonar.login=545539121b7b4bcf97cf8aea6153cd81cc4ffaf3 -f micro-product/pom.xml"
             }
         }
         stage('Deploy') {
