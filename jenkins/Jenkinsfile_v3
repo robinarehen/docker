@@ -1,0 +1,45 @@
+pipeline {
+    agent any
+
+    tools {
+        // Install the Maven version configured as "M3" and add it to the path.
+        maven "MAVEN_HOME"
+    }
+
+    stages {
+        stage('Clone') {
+            steps {
+                git 'https://github.com/Esdive07/demo-crud-repaso'
+            }
+        }
+        stage('Build') {
+            steps {
+                sh "mvn -DskipTests clean package"
+            }
+        }
+        stage('Test') {
+            steps {
+                sh "mvn test"
+            }
+        }
+        stage('Sonar') {
+            steps {
+                withSonarQubeEnv('sonarqube'){
+                    sh "mvn org.sonarsource.scanner.maven:sonar-maven-plugin:3.9.0.2155:sonar -Pcoverage"
+                }
+            }
+        }
+        stage('Quality gate') {
+            steps {
+                timeout(time: 2, unit: 'MINUTES'){
+                    waitForQualityGate abortPipeline: true
+                }
+            }
+        }
+        stage('Deploy') {
+            steps {
+                echo "mvn spring-boot:run"
+            }
+        }
+    }
+}

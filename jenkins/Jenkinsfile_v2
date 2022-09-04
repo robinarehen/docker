@@ -14,7 +14,6 @@ pipeline {
         }
         stage('Build') {
             steps {
-                // -f: permite especificar el pom.xml que se debe ejecutar
                 sh "mvn -DskipTests clean package -f micro-product/pom.xml"
             }
         }
@@ -25,12 +24,21 @@ pipeline {
         }
         stage('Sonar') {
             steps {
-                sh "mvn sonar:sonar -Pcoverage -Dsonar.host.url=http://sonarqube:9000 -Dsonar.login=token -f micro-product/pom.xml"
+                withSonarQubeEnv('sonarqube'){
+                    sh "mvn org.sonarsource.scanner.maven:sonar-maven-plugin:3.9.0.2155:sonar -Pcoverage -f micro-product/pom.xml"
+                }
+            }
+        }
+        stage('Quality gate') {
+            steps {
+                timeout(time: 2, unit: 'MINUTES'){
+                    waitForQualityGate abortPipeline: true
+                }
             }
         }
         stage('Deploy') {
             steps {
-                sh "mvn spring-boot:run -f micro-product/pom.xml"
+                echo "mvn spring-boot:run -f micro-product/pom.xml"
             }
         }
     }
