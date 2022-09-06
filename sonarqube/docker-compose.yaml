@@ -7,7 +7,7 @@ services:
       - .\data:/opt/sonarqube/data
     ports:
       - "9000:9000"
-networks:
-  default:
-    external:
-      name: network_jenkins
+#networks:
+#  default:
+#    external:
+#      name: network_jenkins

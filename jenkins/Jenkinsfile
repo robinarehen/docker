@@ -15,6 +15,7 @@ pipeline {
         stage('Build') {
             steps {
                 // -f: permite especificar el pom.xml que se debe ejecutar
+                // para cuando una carpeta raíz contiene varios proyectos o módulos
                 sh "mvn -DskipTests clean package -f micro-product/pom.xml"
             }
         }
