@@ -19,7 +19,8 @@ pipeline {
         }
         stage('Test') {
             steps {
-                sh "mvn test -f micro-product/pom.xml"
+                // Se cambia <test> por <install> para que se genere el reporte de jacoco
+                sh "mvn clean intall -f micro-product/pom.xml"
             }
         }
         stage('Sonar') {
@@ -31,6 +32,9 @@ pipeline {
         }
         stage('Quality gate') {
             steps {
+
+                sleep(10) //seconds
+                
                 timeout(time: 2, unit: 'MINUTES'){
                     waitForQualityGate abortPipeline: true
                 }

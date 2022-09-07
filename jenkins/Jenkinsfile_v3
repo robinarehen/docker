@@ -9,7 +9,7 @@ pipeline {
     stages {
         stage('Clone') {
             steps {
-                git 'https://github.com/Esdive07/demo-crud-repaso'
+                git 'https://github.com/robinarehen/demo-crud-repaso'
             }
         }
         stage('Build') {
@@ -19,7 +19,8 @@ pipeline {
         }
         stage('Test') {
             steps {
-                sh "mvn test"
+                // Se cambia <test> por <install> para que se genere el reporte de jacoco
+                sh "mvn clean install"
             }
         }
         stage('Sonar') {
@@ -31,6 +32,9 @@ pipeline {
         }
         stage('Quality gate') {
             steps {
+
+                sleep(10) //seconds
+
                 timeout(time: 2, unit: 'MINUTES'){
                     waitForQualityGate abortPipeline: true
                 }

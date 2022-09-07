@@ -15,7 +15,7 @@ Se instalan los siguientes plugins
 
 <br>
 
-2. **Maven** para compilar los proyectos, [Documentación oficial](https://plugins.jenkins.io/maven-plugin/). Una vez instalado el plugin se debe ir al apartado `~/Administrar Jenkins/Global tool configuration/Maven` y agregan una instalación con la versión que se desea trabajar.
+2. **Maven** para compilar los proyectos Java, [Documentación oficial](https://plugins.jenkins.io/maven-plugin/). Una vez instalado el plugin se debe ir al apartado `~/Administrar Jenkins/Global tool configuration/Maven` y agregan una instalación con la versión que se desea trabajar.
 
 <br>
 
@@ -47,8 +47,10 @@ curl --request DELETE --header "Authorization: token <githubtoken>"  --url "http
 # Sonarqube
 Al momento de lanzar el contenedor va a solicitar usuario y clave los cuales por defecto son: `admin`, una vez ingresado solicita el cambio de la clave.
 
+<br>
+
 ## Cobertura de código 
-Para que se pueda reconocer la cobertura de test de los proyecto Java, se debe agregar el siguiente plugin al `pom.xml`.
+Para que se pueda reconocer la cobertura de test de los proyecto Java, se debe agregar el siguiente plugin al `pom.xml`, más información en la [Documentación Oficial](https://docs.sonarqube.org/latest/analysis/test-coverage/test-coverage-parameters/).
 
 En la url de [jacoco-maven-plugin](https://mvnrepository.com/artifact/org.jacoco/jacoco-maven-plugin) se puede consultar la versión más reciente.
 ```xml
