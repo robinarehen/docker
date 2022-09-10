@@ -80,3 +80,6 @@ En la url de [jacoco-maven-plugin](https://mvnrepository.com/artifact/org.jacoco
 	</executions>
 </plugin>
 ```
+
+# Videos
+Como bono extra al final de la documentación comparto la lista de videos en YouTube [Integración Continua con GitHub, Docker, Jenkins y Sonarqube](https://youtube.com/playlist?list=PLkZ7fyf7voZBhdbryb9pYphpNFqvO3d13)
