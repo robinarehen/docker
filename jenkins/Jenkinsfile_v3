@@ -9,24 +9,32 @@ pipeline {
     stages {
         stage('Clone') {
             steps {
-                git 'https://github.com/robinarehen/demo-crud-repaso'
+                timeout(time: 2, unit: 'MINUTES'){
+                    git 'https://github.com/robinarehen/demo-crud-repaso.git'
+                }
             }
         }
         stage('Build') {
             steps {
-                sh "mvn -DskipTests clean package"
+                timeout(time: 2, unit: 'MINUTES'){
+                    sh "mvn -DskipTests clean package"
+                }
             }
         }
         stage('Test') {
             steps {
-                // Se cambia <test> por <install> para que se genere el reporte de jacoco
-                sh "mvn clean install"
+                timeout(time: 2, unit: 'MINUTES'){
+                    // Se cambia <test> por <install> para que se genere el reporte de jacoco
+                    sh "mvn clean install"
+                }
             }
         }
         stage('Sonar') {
             steps {
-                withSonarQubeEnv('sonarqube'){
-                    sh "mvn org.sonarsource.scanner.maven:sonar-maven-plugin:3.9.0.2155:sonar -Pcoverage"
+                timeout(time: 2, unit: 'MINUTES'){
+                    withSonarQubeEnv('sonarqube'){
+                        sh "mvn org.sonarsource.scanner.maven:sonar-maven-plugin:3.9.0.2155:sonar -Pcoverage"
+                    }
                 }
             }
         }
