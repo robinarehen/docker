@@ -1,0 +1,97 @@
+pipeline {
+    agent any
+
+    tools {
+        // Install the Maven version configured as "M3" and add it to the path.
+        maven "MAVEN_HOME"
+    }
+    
+    parameters {
+      choice choices: ['main'], name: 'Branch'
+    }
+
+    stages {
+        stage('Clone') {
+            steps {
+                timeout(time: 2, unit: 'MINUTES'){
+                    git branch:"${Branch}", url:'https://github.com/robinarehen/springboot-demos.git'
+                }
+            }
+        }
+        stage('Build') {
+            steps {
+                timeout(time: 2, unit: 'MINUTES'){
+                    sh "mvn -DskipTests clean package -f micro-product/pom.xml"
+                }
+            }
+        }
+        stage('Test') {
+            steps {
+                timeout(time: 2, unit: 'MINUTES'){
+                    // Se cambia <test> por <install> para que se genere el reporte de jacoco
+                    sh "mvn clean install -f micro-product/pom.xml"
+                }
+            }
+        }
+        stage('Sonar') {
+            steps {
+                timeout(time: 2, unit: 'MINUTES'){
+                    withSonarQubeEnv('sonarqube'){
+                        sh "mvn org.sonarsource.scanner.maven:sonar-maven-plugin:3.9.0.2155:sonar -f micro-product/pom.xml"
+                    }
+                }
+            }
+        }
+        stage('Quality gate') {
+            steps {
+
+                sleep(10) //seconds
+
+                timeout(time: 2, unit: 'MINUTES'){
+                    waitForQualityGate abortPipeline: true
+                }
+            }
+        }
+        stage('Deploy') {
+            steps {
+                
+                // Se copian los archivos de la carpeta docker a la carpeta target
+                sh "cp micro-product/docker/* micro-product/target/"
+
+                // Se elimina el contenedor en caso que exista
+                sh (
+                    script: 'docker-compose -f micro-product/target/docker-compose.yml down',
+                    returnStatus: true
+                )
+                
+                /*
+                * Se elimina la imagen en caso que exista
+                *
+                * Con este comando se recupera del archivo [docker-compose.yml] el nombre de la imagen
+                *
+                * $(grep 'image:' micro-product/docker/docker-compose.yml | sed 's/image: //g;..')
+                *
+                * Para que elimine las imagenes anterior las cuales tengan el mismo nombre, en el caso 
+                * tenga una TAG diferente a la que se va crear.
+                *
+                * NOTAS: 
+                * 1. en el [docker-compose.yml] solo debe existir un servicio, en caso que existan 2,
+                * estara repetida la palabra clave ['image:'] y no se ha contemplado el escenario.
+                *
+                * 2. Si existe otro micro con el mismo nombre imagen y diferente TAG sera eliminado
+                *
+                */
+                sh (
+                    script:'''
+                        IMAGE_NAME=$(grep 'image:' micro-product/docker/docker-compose.yml | sed 's/image: //g; s/:.*//')
+                        
+                        docker rmi -f $(docker images $IMAGE_NAME -q)
+                    ''',
+                    returnStatus: true
+                )
+                
+                sh 'docker-compose -f micro-product/target/docker-compose.yml up --build -d'
+            }
+        }
+    }
+}
