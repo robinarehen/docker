@@ -6,10 +6,9 @@ pipeline {
         maven "MAVEN_HOME"
     }
 
-    /*environment {
+    environment {
         SonarToken = credentials('Sonarqube')
-        ProjectKey = 'com.example.esme:repasando-programacion'
-    }*/
+    }
 
     parameters {
         string defaultValue: 'https://github.com/robinarehen/repasando-programacion.git', description: 'Se espera url del proyecto en GitHub', name: 'GitUrl'

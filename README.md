@@ -31,6 +31,23 @@ Se instalan los siguientes plugins
 
 <br>
 
+## Jenkins Pipeline
+Se crea el `Pipeline` de nombre [Jenkinsfile_v5](jenkins/Jenkinsfile_v5) el cual permite compilar y subir a `Sonarqube` cualquier proyecto `Java - Mave`, para lo cual se deben crear dos variables de entorno.
+
+Entrando al apartado `~/Administrar Jenkins/Configurar el Sistema/Propiedades globales` se activa la opción `Variables de entorno` y se agregan los nombres y valores.
+
+```
+Nombre:	SONAR_URL_DEV
+Valor:	http://localhost:9000
+
+Nombre:	SONAR_URL_API_DEV
+Valor:	http://localhost:9000/api/qualitygates/project_status?projectKey
+```
+
+**NOTA:** Si se ha realizado la configuración del punto `3 - IV` del apartado [Jenkins](#jenkins), se puede habilitar como variable de entorno y dentro del [Jenkinsfile_v5](jenkins/Jenkinsfile_v5) se debe reemplazar la variable de entorno `SONAR_URL_DEV`, con el fin de no tener dos variables con el mismo valor.
+
+<br>
+
 ## Jenkins - GitHub
 Se plantena utilizar la api de github para la creación y administración de repositorio, para lo cual se accede a la documentación
 [GitHub Api](https://docs.github.com/en/rest/repos).
