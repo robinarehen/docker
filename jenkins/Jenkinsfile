@@ -36,3 +36,58 @@ pipeline {
         }
     }
 }
+
+node {
+   
+    environment {
+        projectOSE = '';
+    }
+
+    stage('Check branch') {
+        try {       
+            stageValidateExec(enviroment, branchGit);
+            logEjecuciones = logEjecuciones + 'Check branch: OK\n';
+        } catch(e) {
+            logEjecuciones = logEjecuciones + 'Check branch: KO\n';
+            throw e;
+        }
+    }
+
+    stage('Tests Unitaries') {
+        try {
+            stageTests();
+            logEjecuciones = logEjecuciones + 'Tests Unitaries PRO: OK\n';
+        } catch (e) {
+            logEjecuciones = logEjecuciones + 'Tests Unitaries PRO: KO\n';
+            throw e;
+        }
+    }
+}
+
+def stageValidateExec(def env, def branch){ 
+    if (env == "des" || (branch == "develop" || branch == "master" || branch.startsWith("release/"))) {
+        println "Branch [${branch}] is valid to be deployed in [${env}]"
+    } else {
+        println "Branch [${branch}] is NOT valid to be deployed in [${env}]"
+        throw new Exception("Invalid branch ${branch} for environment ${env}")
+    }
+}
+
+def stageTests() {
+    println 'Tests Unitarios PRO';
+    try {
+        withMaven(  jdk: 'JAVA_SYSTEM_11', maven: 'MAVEN_SYSTEM',mavenSettingsFilePath: '/opt/maven/conf/settingsPibank.xml') {
+            if (isUnix()) {
+                sh "mvn test";
+            } else {
+                bat "mvn test";
+            }
+        }
+    } catch(err) {
+        step([$class: 'JUnitResultArchiver', testResults: '**/target/surefire-reports/TEST-*.xml'])
+        if (currentBuild.result == 'UNSTABLE') {
+            currentBuild.result = 'FAILURE' //ABORTED FAILURE NOT_BUILT SUCCESS UNSTABLE
+        }
+        throw err;      
+    }       
+}
