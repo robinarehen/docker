@@ -44,7 +44,7 @@ pipeline {
 
                 /*
                 * Se implementa la consulta de la QualityGate de Sonar
-                * grep -o $SONAR_KEY => permite obtener todos los status en lineas un bajo la otra
+                * grep -o $SONAR_KEY => permite obtener todos los status en lineas una bajo la otra
                 * sed 1q => permite obtener la primera fila de los estatus
                 * sed $SONAR_STATUS => permite obtner el valor del status
                 */
