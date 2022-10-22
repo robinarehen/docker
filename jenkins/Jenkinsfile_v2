@@ -9,7 +9,7 @@ pipeline {
     stages {
         stage('Clone') {
             steps {
-                git 'https://github.com/robinarehen/multi-modules'
+                git 'https://github.com/robinarehen/springboot-demos.git'
             }
         }
         stage('Build') {
