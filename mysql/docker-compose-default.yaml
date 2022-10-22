@@ -2,15 +2,15 @@ version: "3.8"
 services:
   mysql_database:
     container_name: mysql_database
-    image: mysql:5.7
+    image: mysql:8
     restart: always
     ports:
       - "3306:3306"
     environment:
       MYSQL_ROOT_PASSWORD: abc123abc
     volumes:
-      - C:\Workspace-programs\Docker\mysql\data:/var/lib/mysql
-      - C:\Workspace-programs\Docker\mysql\init:/docker-entrypoint-initdb.d
+      - .\data:/var/lib/mysql
+      - .\init:/docker-entrypoint-initdb.d
     networks:
       - backend
 networks:
